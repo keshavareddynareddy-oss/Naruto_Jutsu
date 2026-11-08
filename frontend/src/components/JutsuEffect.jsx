@@ -36,10 +36,13 @@ export default function JutsuEffect({ jutsu, onDismiss }) {
   return (
     <div className={`jutsu-overlay jutsu-overlay--${type}`} role="status" aria-live="polite">
       <div className={`jutsu-effect jutsu-effect--${type}`}>
-        <div className="jutsu-effect-kicker">✦ Jutsu Activated ✦</div>
+        <div className="jutsu-effect-kicker">JUTSU ACTIVATED</div>
         <h2>
           {icon} {jutsu.name}
         </h2>
+        {(jutsu.japaneseName || jutsu.japanese_name) && (
+          <p className="jutsu-japanese">{jutsu.japaneseName || jutsu.japanese_name}</p>
+        )}
         <p className="jutsu-chant">{jutsu.chant || `${jutsu.type} chakra resonance detected.`}</p>
         <p>{jutsu.description || "Seal sequence complete."}</p>
         {typeof onDismiss === "function" && (

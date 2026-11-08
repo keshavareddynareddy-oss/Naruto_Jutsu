@@ -28,6 +28,11 @@ python run.py
 
 The API listens on `http://127.0.0.1:8000` (`/api/health`, `/api/predict`, `/docs`).
 
+Prediction requests are limited to 2.5 MB of base64 input and decoded images are
+limited to 4 megapixels. The browser must run on HTTPS (or localhost) for camera
+access. If camera access is unavailable, use the Hand Sign Guide to run practice
+mode without the backend classifier.
+
 **Frontend**
 
 ```bash

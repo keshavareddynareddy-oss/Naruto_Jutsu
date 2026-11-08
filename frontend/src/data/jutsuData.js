@@ -31,6 +31,7 @@ export const SIGN_IMAGE_BY_NAME = {
 export const JUTSU_CATALOG = [
   {
     name: "Fire Release: Great Fireball",
+    japaneseName: "火遁・豪火球の術",
     type: "FIRE",
     chant: "Katon: Goukakyuu no Jutsu",
     description: "A roaring sphere of fire exhaled from the lungs.",
@@ -38,6 +39,7 @@ export const JUTSU_CATALOG = [
   },
   {
     name: "Shadow Clone Jutsu",
+    japaneseName: "影分身の術",
     type: "SHADOW",
     chant: "Kage Bunshin no Jutsu",
     description: "Split chakra into living copies that fight beside you.",
@@ -45,6 +47,7 @@ export const JUTSU_CATALOG = [
   },
   {
     name: "Water Release: Water Dragon",
+    japaneseName: "水遁・水龍弾の術",
     type: "WATER",
     chant: "Suiton: Suiryuudan no Jutsu",
     description: "Shape a surging dragon from surrounding water.",
@@ -52,6 +55,7 @@ export const JUTSU_CATALOG = [
   },
   {
     name: "Lightning Release: Chidori",
+    japaneseName: "雷遁・千鳥",
     type: "LIGHTNING",
     chant: "Chidori",
     description: "Concentrate lightning into a thousand-bird cry.",
@@ -59,6 +63,7 @@ export const JUTSU_CATALOG = [
   },
   {
     name: "Wind Release: Rasengan Formation",
+    japaneseName: "風遁・螺旋丸",
     type: "WIND",
     chant: "Fuuton: Rasengan",
     description: "Spin wind chakra into a spiraling sphere.",
@@ -66,6 +71,7 @@ export const JUTSU_CATALOG = [
   },
   {
     name: "Earth Release: Earth Wall",
+    japaneseName: "土遁・土流壁",
     type: "EARTH",
     chant: "Doton: Doryuuheki",
     description: "Raise a stone rampart from the ground.",

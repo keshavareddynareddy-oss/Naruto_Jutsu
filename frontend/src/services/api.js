@@ -21,6 +21,16 @@ API.interceptors.request.use((config) => {
   return config;
 });
 
+API.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    const detail = error.response?.data?.detail;
+    const message = typeof detail === "string" ? detail : "Nexus service unavailable.";
+    error.userMessage = message;
+    return Promise.reject(error);
+  }
+);
+
 export const resetPredictionState = async () => {
   await API.post("/reset");
 };

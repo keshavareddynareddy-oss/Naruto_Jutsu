@@ -19,6 +19,7 @@ export default function CameraFeed({ onPrediction, onRunningChange }) {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const cameraRef = useRef(null);
+  const handsRef = useRef(null);
   const lastPredictAtRef = useRef(0);
   const retryAfterRef = useRef(0);
   const requestInFlightRef = useRef(false);
@@ -26,6 +27,7 @@ export default function CameraFeed({ onPrediction, onRunningChange }) {
 
   const [running, setRunning] = useState(false);
   const [cameraError, setCameraError] = useState("");
+  const [serviceError, setServiceError] = useState("");
   const onPredictionRef = useRef(onPrediction);
 
   useEffect(() => {
@@ -37,6 +39,10 @@ export default function CameraFeed({ onPrediction, onRunningChange }) {
       cameraRef.current.stop();
       cameraRef.current = null;
     }
+    if (handsRef.current) {
+      handsRef.current.close();
+      handsRef.current = null;
+    }
 
     const video = videoRef.current;
     if (video && video.srcObject) {
@@ -45,6 +51,7 @@ export default function CameraFeed({ onPrediction, onRunningChange }) {
     }
 
     setRunning(false);
+    setServiceError("");
 
     try {
       await resetPredictionState();
@@ -129,10 +136,14 @@ export default function CameraFeed({ onPrediction, onRunningChange }) {
       if (!image) return;
 
       const response = await API.post("/predict", { image });
+      if (mountedRef.current) setServiceError("");
       if (mountedRef.current && typeof onPredictionRef.current === "function") {
         onPredictionRef.current(response.data);
       }
-    } catch {
+    } catch (error) {
+      if (mountedRef.current) {
+        setServiceError(error.userMessage || "Prediction service unavailable.");
+      }
       retryAfterRef.current = Date.now() + 1500;
     } finally {
       requestInFlightRef.current = false;
@@ -173,6 +184,15 @@ export default function CameraFeed({ onPrediction, onRunningChange }) {
     if (cameraRef.current) return;
     setCameraError("");
 
+    if (!window.isSecureContext && window.location.hostname !== "localhost") {
+      setCameraError("Camera access requires HTTPS or localhost.");
+      return;
+    }
+    if (!navigator.mediaDevices?.getUserMedia) {
+      setCameraError("This browser does not support camera access.");
+      return;
+    }
+
     const hands = new Hands({
       locateFile: (file) =>
         `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`,
@@ -188,6 +208,7 @@ export default function CameraFeed({ onPrediction, onRunningChange }) {
     });
 
     hands.onResults(onResults);
+    handsRef.current = hands;
 
     cameraRef.current = new Camera(videoRef.current, {
       onFrame: async () => {
@@ -200,8 +221,16 @@ export default function CameraFeed({ onPrediction, onRunningChange }) {
     try {
       await cameraRef.current.start();
       setRunning(true);
-    } catch {
-      setCameraError("Camera access failed. Allow permissions and retry.");
+    } catch (error) {
+      await stopCamera();
+      const name = error?.name;
+      const message =
+        name === "NotAllowedError"
+          ? "Camera permission was denied. Allow access and retry."
+          : name === "NotFoundError"
+            ? "No camera was found on this device."
+            : "Camera access failed. Check your browser permissions and retry.";
+      setCameraError(message);
       setRunning(false);
     }
   };
@@ -243,6 +272,7 @@ export default function CameraFeed({ onPrediction, onRunningChange }) {
       </div>
 
       {cameraError && <p className="inline-error">{cameraError}</p>}
+      {serviceError && running && <p className="inline-error">{serviceError}</p>}
 
       <div className="camera-stage">
         {!running && (

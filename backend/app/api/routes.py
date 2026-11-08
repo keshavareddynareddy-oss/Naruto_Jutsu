@@ -1,5 +1,7 @@
+import re
+
 from fastapi import APIRouter, Header, HTTPException
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from app.constants.jutsu_patterns import catalog
 from app.core.jutsu_engine import reset_jutsu_cooldowns
@@ -11,12 +13,18 @@ from app.config import settings
 router = APIRouter()
 
 
+SESSION_PATTERN = re.compile(r"^[A-Za-z0-9._:-]{1,80}$")
+
+
 class PredictionRequest(BaseModel):
-    image: str
+    image: str = Field(min_length=32, max_length=2_500_000)
 
 
 def _session(x_session_id: str | None) -> str:
-    return (x_session_id or "default").strip() or "default"
+    session_id = (x_session_id or "default").strip()
+    if not SESSION_PATTERN.fullmatch(session_id):
+        raise HTTPException(status_code=400, detail="Invalid session identifier.")
+    return session_id
 
 
 @router.get("/health")
@@ -38,12 +46,15 @@ async def jutsus():
 
 @router.post("/predict")
 async def predict(data: PredictionRequest, x_session_id: str | None = Header(default=None)):
+    session_id = _session(x_session_id)
     try:
-        return process_frame(data.image, session_id=_session(x_session_id))
+        return process_frame(data.image, session_id=session_id)
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
+    except RuntimeError as exc:
+        raise HTTPException(status_code=503, detail=str(exc)) from exc
     except Exception as exc:
-        raise HTTPException(status_code=500, detail=f"Prediction failed: {exc}") from exc
+        raise HTTPException(status_code=500, detail="Prediction service unavailable.") from exc
 
 
 @router.post("/reset")
