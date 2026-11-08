@@ -1,0 +1,1279 @@
+@import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Rajdhani:wght@400;500;600;700&family=Teko:wght@500;600;700&display=swap");
+
+/* ─── Design Tokens ──────────────────────────────────────────────────────── */
+:root {
+  --bg-void: #03050a;
+  --bg-deep: #060c14;
+  --bg-mid: #0c1525;
+  --panel: rgba(8, 14, 26, 0.82);
+  --panel-border: rgba(255, 160, 50, 0.18);
+  --panel-border-glow: rgba(255, 160, 50, 0.55);
+  --text-main: #eef4ff;
+  --text-muted: #8aa0c0;
+  --orange: #ff8c00;
+  --orange-2: #ffb347;
+  --cyan: #00e5ff;
+  --gold: #ffd060;
+  --danger: #ff4444;
+  --shadow-dark: rgba(255, 140, 0, 0.15);
+  --leaf-green: #2ecc71;
+  --leaf-gold: #f1c40f;
+  --village-glow: rgba(46, 204, 113, 0.25);
+  --scroll-glow: rgba(241, 196, 15, 0.3);
+  --chakra-pulse: rgba(0, 229, 255, 0.4);
+}
+
+/* ─── Global Reset ───────────────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ─── Body & Background ───────────────────────────────────────────────────── */
+body {
+  font-family: "Rajdhani", sans-serif;
+  font-size: 16px;
+  color: var(--text-main);
+  min-height: 100vh;
+  background-color: var(--bg-void);
+
+  /* Layered: animated particle shimmer + orange chakra haze + base gradient */
+  background-image:
+    radial-gradient(ellipse 60% 40% at 50% 0%, rgba(255, 130, 0, 0.08) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 60% at 100% 50%, rgba(0, 229, 255, 0.05) 0%, transparent 60%),
+    radial-gradient(ellipse 80% 30% at 0% 100%, rgba(255, 90, 0, 0.06) 0%, transparent 60%),
+    linear-gradient(180deg, #0a1220 0%, #03050a 100%);
+}
+
+/* Subtle kunai-pattern SVG overlay for the body */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image:
+    radial-gradient(circle 1px at 20% 20%, rgba(255, 160, 50, 0.12) 0%, transparent 1px),
+    radial-gradient(circle 1px at 80% 60%, rgba(0, 229, 255, 0.08) 0%, transparent 1px),
+    radial-gradient(circle 1px at 40% 80%, rgba(255, 160, 50, 0.07) 0%, transparent 1px);
+  background-size: 200px 200px, 300px 300px, 150px 150px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+h1,
+h2,
+h3 {
+  font-family: "Teko", sans-serif;
+  letter-spacing: 0.04em;
+  font-weight: 600;
+}
+
+/* ─── Layout ─────────────────────────────────────────────────────────────── */
+.app-container {
+  position: relative;
+  z-index: 1;
+  width: min(1280px, 96vw);
+  margin: 0 auto;
+  min-height: 100vh;
+  padding: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.main-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  gap: 0.9rem;
+}
+
+.left-panel,
+.right-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+/* ─── Base Panel ─────────────────────────────────────────────────────────── */
+.panel {
+  position: relative;
+  background: linear-gradient(145deg, rgba(10, 18, 34, 0.9), rgba(6, 12, 22, 0.95));
+  border: 1px solid var(--panel-border);
+  border-radius: 16px;
+  padding: 1rem 1.1rem;
+  backdrop-filter: blur(12px);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.03) inset,
+    0 4px 30px rgba(0, 0, 0, 0.5),
+    0 0 40px rgba(255, 130, 0, 0.04);
+  animation: panelIn 400ms cubic-bezier(0.22, 1, 0.36, 1);
+  overflow: hidden;
+}
+
+/* Faint orange stripe at the top of every panel */
+.panel::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--orange), var(--orange-2), transparent);
+  opacity: 0.55;
+  border-radius: 16px 16px 0 0;
+}
+
+.panel-title {
+  font-family: "Teko", sans-serif;
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--gold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-shadow: 0 0 18px rgba(255, 200, 50, 0.35);
+  margin-bottom: 0.5rem;
+}
+
+.row-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.tiny-note {
+  font-size: 0.74rem;
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+}
+
+.panel-placeholder {
+  color: var(--text-muted);
+  font-size: 0.94rem;
+  font-style: italic;
+}
+
+/* ─── Header ─────────────────────────────────────────────────────────────── */
+.header-container {
+  position: relative;
+  width: 100%;
+  padding: 0.9rem 1.4rem;
+  border: 1px solid rgba(255, 140, 0, 0.28);
+  border-radius: 16px;
+  background: linear-gradient(115deg, rgba(14, 19, 30, 0.98), rgba(10, 17, 32, 0.95));
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  box-shadow:
+    0 0 60px rgba(255, 120, 0, 0.1),
+    0 2px 20px rgba(0, 0, 0, 0.6);
+  overflow: hidden;
+}
+
+/* Animated orange glow sweep across the header */
+.header-container::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 140, 0, 0.04), transparent);
+  animation: headerSheen 6s ease infinite;
+}
+
+.header-left,
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  z-index: 1;
+}
+
+.header-right {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+/* Leaf Village symbol-inspired logo */
+.logo {
+  width: 52px;
+  height: 52px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-family: "Teko", sans-serif;
+  font-size: 1rem;
+  letter-spacing: 0.05em;
+  font-weight: 700;
+  color: #fff;
+  background: conic-gradient(from 180deg, #ff6000, #ff9000, #ffb800, #ff6000);
+  box-shadow:
+    0 0 0 3px rgba(255, 140, 0, 0.2),
+    0 0 28px rgba(255, 120, 0, 0.55),
+    0 0 60px rgba(255, 80, 0, 0.2);
+  animation: rotateLogo 20s linear infinite;
+}
+
+.title {
+  margin: 0;
+  font-family: "Cinzel", serif;
+  font-size: 1.35rem;
+  letter-spacing: 0.06em;
+  font-weight: 900;
+  background: linear-gradient(90deg, #fff 20%, var(--orange-2), var(--gold));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.subtitle {
+  margin: 0.1rem 0 0;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.header-status {
+  z-index: 1;
+  border: 1px solid rgba(255, 140, 0, 0.22);
+  border-radius: 999px;
+  padding: 0.45rem 1.1rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  background: rgba(10, 16, 26, 0.7);
+  max-width: 48%;
+  text-align: right;
+  letter-spacing: 0.03em;
+  transition: all 0.4s ease;
+}
+
+.header-status-kicker {
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  opacity: 0.7;
+}
+
+.ghost-btn {
+  appearance: none;
+  border: 1px solid rgba(255, 140, 0, 0.28);
+  background: rgba(10, 16, 26, 0.7);
+  color: var(--text-muted);
+  border-radius: 999px;
+  padding: 0.38rem 0.85rem;
+  font-family: "Teko", sans-serif;
+  font-size: 0.95rem;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+
+.ghost-btn:hover,
+.ghost-btn[aria-pressed="true"] {
+  color: var(--gold);
+  border-color: rgba(255, 180, 60, 0.7);
+}
+
+.banner-note {
+  border: 1px solid rgba(255, 180, 60, 0.35);
+  background: rgba(255, 140, 0, 0.08);
+  color: var(--gold);
+  border-radius: 12px;
+  padding: 0.65rem 0.9rem;
+  font-size: 0.88rem;
+}
+
+.camera-stage {
+  position: relative;
+}
+
+.camera-placeholder {
+  display: grid;
+  place-items: center;
+  gap: 0.6rem;
+  min-height: 280px;
+  border-radius: 12px;
+  border: 1px dashed rgba(255, 160, 50, 0.35);
+  background: radial-gradient(circle at 50% 30%, rgba(255, 140, 0, 0.12), rgba(4, 8, 16, 0.9));
+  text-align: center;
+  padding: 1.2rem;
+  color: var(--text-muted);
+}
+
+.camera-placeholder-mark {
+  font-family: "Cinzel", serif;
+  font-size: 2.4rem;
+  color: var(--orange-2);
+  text-shadow: 0 0 24px rgba(255, 140, 0, 0.5);
+}
+
+.welcome-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  background: rgba(2, 4, 10, 0.78);
+  backdrop-filter: blur(8px);
+  padding: 1rem;
+}
+
+.welcome-card {
+  width: min(520px, 94vw);
+  border-radius: 18px;
+  border: 1px solid rgba(255, 160, 50, 0.4);
+  background: linear-gradient(160deg, rgba(18, 12, 4, 0.96), rgba(6, 10, 20, 0.96));
+  padding: 1.4rem 1.5rem 1.3rem;
+  box-shadow: 0 0 80px rgba(255, 120, 0, 0.18);
+}
+
+.welcome-kicker {
+  color: var(--orange-2);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  margin-bottom: 0.4rem;
+}
+
+.welcome-card h2 {
+  font-family: "Cinzel", serif;
+  font-size: 1.45rem;
+  margin-bottom: 0.55rem;
+}
+
+.welcome-copy,
+.welcome-steps {
+  color: #c5d4ea;
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+
+.welcome-steps {
+  margin: 0.8rem 0 1.1rem 1.1rem;
+}
+
+.rank-copy {
+  font-size: 0.88rem;
+  color: #c5d4ea;
+  margin-bottom: 0.5rem;
+}
+
+.app-footer {
+  margin-top: auto;
+  padding: 0.4rem 0 0.2rem;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.footer-dot {
+  margin: 0 0.45rem;
+  opacity: 0.5;
+}
+
+.header-status.active {
+  border-color: rgba(255, 180, 60, 0.8);
+  color: var(--gold);
+  background: rgba(255, 140, 0, 0.08);
+  box-shadow: 0 0 22px rgba(255, 150, 40, 0.28);
+  animation: pulseBadge 2.5s ease infinite;
+}
+
+/* ─── Camera Panel ───────────────────────────────────────────────────────── */
+.camera-panel-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.camera-action-row {
+  display: flex;
+  gap: 0.55rem;
+  margin-bottom: 0.65rem;
+}
+
+.camera-btn {
+  position: relative;
+  border: none;
+  border-radius: 10px;
+  padding: 0.52rem 1.1rem;
+  font-family: "Teko", sans-serif;
+  font-size: 1.05rem;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+  cursor: pointer;
+  overflow: hidden;
+  transition: transform 150ms ease, box-shadow 200ms ease;
+
+  /* Default: orange — Naruto's chakra colour */
+  background: linear-gradient(135deg, #e86000, #ff9e2f);
+  color: #fff;
+  box-shadow: 0 4px 18px rgba(255, 110, 0, 0.35);
+}
+
+.camera-btn::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), transparent);
+  opacity: 0;
+  transition: opacity 200ms;
+}
+
+.camera-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 28px rgba(255, 120, 0, 0.5);
+}
+
+.camera-btn:hover::after {
+  opacity: 1;
+}
+
+.camera-btn:active {
+  transform: translateY(0);
+}
+
+.camera-btn.stop {
+  background: linear-gradient(135deg, #c0392b, #e74c3c);
+  box-shadow: 0 4px 18px rgba(231, 76, 60, 0.35);
+}
+
+.camera-btn.stop:hover {
+  box-shadow: 0 6px 28px rgba(231, 76, 60, 0.5);
+}
+
+.inline-error {
+  color: #ff9090;
+  font-size: 0.88rem;
+  margin-bottom: 0.45rem;
+}
+
+/* Camera video canvas with chakra-blue glow */
+.camera-canvas {
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid rgba(0, 220, 255, 0.3);
+  aspect-ratio: 4 / 3;
+  background: #010508;
+  box-shadow:
+    inset 0 0 40px rgba(0, 200, 255, 0.06),
+    0 0 30px rgba(0, 200, 255, 0.08);
+  transition: border-color 0.4s ease, box-shadow 0.4s ease;
+}
+
+/* Pulse glow when camera is live */
+.camera-panel:has(.status-pill.live) .camera-canvas {
+  border-color: rgba(0, 229, 255, 0.55);
+  box-shadow:
+    inset 0 0 40px rgba(0, 200, 255, 0.1),
+    0 0 50px rgba(0, 200, 255, 0.15);
+}
+
+/* ─── Status Pills ───────────────────────────────────────────────────────── */
+.status-pill {
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 0.22rem 0.65rem;
+  font-family: "Teko", sans-serif;
+  font-size: 0.88rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.status-pill.live {
+  color: #a0ffdc;
+  border-color: rgba(80, 255, 180, 0.6);
+  background: rgba(60, 255, 170, 0.08);
+  box-shadow: 0 0 14px rgba(60, 255, 170, 0.22);
+  animation: livePulse 2s ease infinite;
+}
+
+.status-pill.idle {
+  color: var(--text-muted);
+  border-color: rgba(100, 130, 170, 0.35);
+}
+
+/* ─── Status / Detection Panel ───────────────────────────────────────────── */
+.status-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.detect-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.7rem;
+}
+
+.detect-card {
+  background: rgba(5, 10, 20, 0.6);
+  border: 1px solid rgba(255, 140, 0, 0.12);
+  border-radius: 12px;
+  padding: 0.6rem 0.8rem;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.detect-card:hover {
+  border-color: rgba(255, 140, 0, 0.28);
+  box-shadow: 0 0 18px rgba(255, 130, 0, 0.08);
+}
+
+.detect-label {
+  color: var(--text-muted);
+  font-size: 0.7rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.25rem;
+}
+
+.detect-value {
+  font-family: "Teko", sans-serif;
+  font-size: 1.65rem;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--text-main);
+  letter-spacing: 0.05em;
+}
+
+.detect-value.highlight {
+  color: var(--orange-2);
+  text-shadow: 0 0 16px rgba(255, 170, 60, 0.5);
+}
+
+/* ─── Chakra Bar ─────────────────────────────────────────────────────────── */
+.chakra-wrap {
+  margin-top: 0.2rem;
+}
+
+.chakra-label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.35rem;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.chakra-label-row span:last-child {
+  font-family: "Teko", sans-serif;
+  font-size: 1rem;
+  color: var(--cyan);
+}
+
+.chakra-track {
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(5, 10, 20, 0.8);
+  border: 1px solid rgba(0, 200, 255, 0.2);
+  overflow: hidden;
+}
+
+.chakra-fill {
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #00b4ff, #00e5ff, #ff9a3d);
+  background-size: 200%;
+  transition: width 300ms ease;
+  box-shadow: 0 0 10px rgba(0, 220, 255, 0.4);
+  animation: chakraFlow 3s linear infinite;
+}
+
+/* ─── Seal Sequence ──────────────────────────────────────────────────────── */
+.sequence-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-bottom: 0.6rem;
+}
+
+.seal-badge {
+  font-family: "Teko", sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  border-radius: 8px;
+  border: 1px solid rgba(60, 100, 160, 0.55);
+  background: rgba(8, 18, 36, 0.7);
+  padding: 0.18rem 0.7rem;
+  color: #a8bfdc;
+  text-transform: uppercase;
+  transition: all 0.2s ease;
+}
+
+.seal-badge.latest {
+  border-color: rgba(255, 175, 60, 0.85);
+  background: rgba(255, 140, 0, 0.1);
+  color: var(--gold);
+  box-shadow: 0 0 14px rgba(255, 170, 60, 0.3);
+  transform: scale(1.06);
+}
+
+/* Jutsu progress box */
+.progress-box {
+  border-radius: 12px;
+  border: 1px solid rgba(0, 200, 255, 0.2);
+  background: rgba(0, 20, 40, 0.5);
+  padding: 0.65rem 0.8rem;
+}
+
+.progress-track {
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(5, 10, 20, 0.8);
+  border: 1px solid rgba(0, 200, 255, 0.2);
+  overflow: hidden;
+  margin: 0.45rem 0;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #00b4ff, #ff9a3d);
+  box-shadow: 0 0 10px rgba(0, 220, 255, 0.4);
+}
+
+.req-seal--done {
+  color: var(--gold);
+}
+
+.req-seal--next {
+  color: var(--cyan);
+  font-weight: 700;
+}
+
+.progress-line {
+  color: #c0d4ec;
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+.progress-line strong {
+  color: var(--cyan);
+}
+
+/* ─── Jutsu List ─────────────────────────────────────────────────────────── */
+.jutsu-item {
+  appearance: none;
+  display: block;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+  border: 1px solid rgba(50, 70, 110, 0.55);
+  border-radius: 12px;
+  background: rgba(7, 13, 22, 0.7);
+  padding: 0.7rem 0.85rem;
+  transition: all 0.25s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.jutsu-item::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  opacity: 0;
+  border-radius: 2px;
+  transition: opacity 0.3s ease;
+}
+
+.jutsu-item:hover {
+  border-color: rgba(90, 130, 200, 0.6);
+}
+
+.jutsu-item+.jutsu-item {
+  margin-top: 0.5rem;
+}
+
+.jutsu-item.tracking {
+  border-color: rgba(0, 230, 255, 0.55);
+  background: rgba(0, 30, 55, 0.55);
+}
+
+.jutsu-item.tracking::before {
+  background: var(--cyan);
+  opacity: 1;
+  box-shadow: 0 0 10px var(--cyan);
+}
+
+.jutsu-item.active {
+  border-color: rgba(255, 175, 60, 0.8);
+  background: rgba(30, 18, 0, 0.55);
+  box-shadow: 0 0 24px rgba(255, 155, 40, 0.18);
+}
+
+.jutsu-item.active::before {
+  background: var(--orange);
+  opacity: 1;
+  box-shadow: 0 0 10px var(--orange);
+}
+
+.jutsu-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.jutsu-title {
+  font-family: "Teko", sans-serif;
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--text-main);
+}
+
+.jutsu-item.active .jutsu-title {
+  color: var(--orange-2);
+}
+
+.jutsu-item.tracking .jutsu-title {
+  color: var(--cyan);
+}
+
+.jutsu-seals {
+  margin-top: 0.25rem;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  letter-spacing: 0.02em;
+}
+
+.seal-arrow {
+  opacity: 0.4;
+  margin: 0 0.2rem;
+}
+
+.jutsu-copy {
+  margin-top: 0.35rem;
+  font-size: 0.78rem;
+  color: #9eb4d0;
+}
+
+/* ─── Element Tags ───────────────────────────────────────────────────────── */
+.element-tag {
+  font-family: "Teko", sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  border-radius: 6px;
+  padding: 0.12rem 0.55rem;
+  font-weight: 600;
+  border: 1px solid transparent;
+  text-transform: uppercase;
+}
+
+.element-tag.fire {
+  background: rgba(255, 90, 40, 0.15);
+  border-color: #ff5a28;
+  color: #ff8060;
+}
+
+.element-tag.shadow {
+  background: rgba(170, 130, 255, 0.14);
+  border-color: #aa82ff;
+  color: #c8a8ff;
+}
+
+.element-tag.water {
+  background: rgba(50, 180, 255, 0.15);
+  border-color: #32b4ff;
+  color: #7dd5ff;
+}
+
+.element-tag.lightning {
+  background: rgba(255, 235, 50, 0.15);
+  border-color: #ffe532;
+  color: #fff3a0;
+}
+
+.element-tag.wind {
+  background: rgba(80, 255, 180, 0.14);
+  border-color: #50ffb4;
+  color: #90ffd0;
+}
+
+.element-tag.earth {
+  background: rgba(220, 170, 80, 0.15);
+  border-color: #dcaa50;
+  color: #f0cc80;
+}
+
+/* ─── Sign Guide ─────────────────────────────────────────────────────────── */
+.sign-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.sign-card {
+  appearance: none;
+  border: 1px solid rgba(50, 75, 120, 0.55);
+  border-radius: 10px;
+  background: rgba(5, 12, 22, 0.65);
+  padding: 0.4rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.22s ease;
+  position: relative;
+  overflow: hidden;
+  font: inherit;
+  color: inherit;
+}
+
+.sign-card:disabled {
+  cursor: default;
+}
+
+.sign-card.next {
+  border-color: rgba(0, 229, 255, 0.7);
+  box-shadow: 0 0 16px rgba(0, 229, 255, 0.2);
+}
+
+.sign-card:hover {
+  border-color: rgba(255, 140, 0, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 120, 0, 0.12);
+}
+
+.sign-card.active {
+  border-color: rgba(255, 185, 60, 0.9);
+  background: rgba(255, 100, 0, 0.08);
+  box-shadow: 0 0 20px rgba(255, 170, 60, 0.3);
+  transform: scale(1.04);
+}
+
+/* Subtle shine on active sign */
+.sign-card.active::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255, 200, 80, 0.12), transparent 60%);
+  border-radius: inherit;
+}
+
+.sign-card img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 7px;
+  filter: brightness(0.88) saturate(0.9);
+  transition: filter 0.2s ease;
+}
+
+.sign-card:hover img,
+.sign-card.active img {
+  filter: brightness(1) saturate(1.1);
+}
+
+.sign-card p {
+  margin-top: 0.28rem;
+  font-family: "Teko", sans-serif;
+  font-size: 0.88rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.sign-card.active p {
+  color: var(--gold);
+}
+
+/* ─── Recent Activations ─────────────────────────────────────────────────── */
+.history-list {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.recent-jutsu {
+  border: 1px solid rgba(50, 80, 130, 0.45);
+  border-radius: 9px;
+  background: rgba(6, 12, 22, 0.65);
+  padding: 0.42rem 0.75rem;
+  font-family: "Teko", sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: #a8c0e0;
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  transition: all 0.2s ease;
+}
+
+.recent-jutsu:first-child {
+  border-color: rgba(255, 175, 60, 0.55);
+  color: var(--gold);
+  background: rgba(255, 120, 0, 0.07);
+}
+
+.recent-jutsu::before {
+  content: "✦";
+  font-size: 0.7rem;
+  color: var(--orange);
+  opacity: 0.7;
+}
+
+.seal-display {
+  margin: 0.2rem 0 0.4rem;
+  padding: 0.7rem 0.85rem;
+}
+
+.seal-name {
+  font-family: "Teko", sans-serif;
+  font-size: 1.8rem;
+  letter-spacing: 0.06em;
+}
+
+.seal-none {
+  color: var(--text-muted);
+}
+
+.confidence-bar-wrap {
+  height: 7px;
+  border-radius: 999px;
+  background: rgba(5, 10, 20, 0.8);
+  overflow: hidden;
+  margin: 0.4rem 0 0.3rem;
+}
+
+.confidence-bar {
+  height: 100%;
+}
+
+.confidence-bar--high {
+  background: #2ecc71;
+}
+
+.confidence-bar--medium {
+  background: #f1c40f;
+}
+
+.confidence-bar--low {
+  background: #e74c3c;
+}
+
+.confidence-label {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.academy-steps {
+  margin: 0.2rem 0 0.6rem 1.1rem;
+  color: #c5d4ea;
+  font-size: 0.88rem;
+  line-height: 1.55;
+}
+
+.academy-focus {
+  font-size: 0.86rem;
+  color: var(--gold);
+}
+
+.jutsu-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: grid;
+  place-items: center;
+  background: rgba(2, 4, 10, 0.62);
+  backdrop-filter: blur(6px);
+  padding: 1rem;
+}
+
+.jutsu-overlay--fire {
+  background: rgba(40, 8, 0, 0.55);
+}
+
+.jutsu-overlay--water {
+  background: rgba(0, 18, 40, 0.55);
+}
+
+.jutsu-overlay--lightning {
+  background: rgba(30, 28, 0, 0.55);
+}
+
+.jutsu-overlay--wind {
+  background: rgba(0, 30, 22, 0.55);
+}
+
+.jutsu-overlay--earth {
+  background: rgba(28, 18, 0, 0.55);
+}
+
+.jutsu-overlay--shadow {
+  background: rgba(12, 0, 28, 0.55);
+}
+
+.jutsu-dismiss-btn {
+  position: absolute;
+  top: 0.7rem;
+  right: 0.8rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(0, 0, 0, 0.35);
+  color: #fff;
+  border-radius: 999px;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+}
+
+.jutsu-chant {
+  color: var(--gold) !important;
+  letter-spacing: 0.04em;
+}
+
+.jutsu-effect--fire {
+  border-color: rgba(255, 90, 40, 0.9);
+}
+
+.jutsu-effect--water {
+  border-color: rgba(50, 180, 255, 0.9);
+}
+
+.jutsu-effect--lightning {
+  border-color: rgba(255, 235, 50, 0.9);
+}
+
+.jutsu-effect--wind {
+  border-color: rgba(80, 255, 180, 0.9);
+}
+
+.jutsu-effect--earth {
+  border-color: rgba(220, 170, 80, 0.9);
+}
+
+.jutsu-effect--shadow {
+  border-color: rgba(170, 130, 255, 0.9);
+}
+
+/* ─── Jutsu Effect (activation banner) ──────────────────────────────────── */
+.jutsu-effect {
+  position: relative;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 178, 60, 0.85);
+  background: linear-gradient(130deg,
+      rgba(255, 100, 0, 0.18),
+      rgba(10, 18, 35, 0.88) 70%);
+  padding: 1.1rem 1.2rem;
+  overflow: hidden;
+  animation: jutsuBurst 600ms cubic-bezier(0.22, 1, 0.36, 1);
+  box-shadow:
+    0 0 40px rgba(255, 130, 0, 0.2),
+    0 0 80px rgba(255, 80, 0, 0.1);
+}
+
+/* Animated radial flash */
+.jutsu-effect::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  width: 140px;
+  height: 140px;
+  background: radial-gradient(circle, rgba(255, 160, 0, 0.22), transparent 70%);
+  animation: chakraPulse 2.5s ease infinite;
+}
+
+/* Subtle scan-line overlay */
+.jutsu-effect::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(0deg,
+      transparent,
+      transparent 3px,
+      rgba(255, 140, 0, 0.015) 3px,
+      rgba(255, 140, 0, 0.015) 4px);
+  pointer-events: none;
+}
+
+.jutsu-effect-kicker {
+  position: relative;
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--orange-2);
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+}
+
+.jutsu-effect h2 {
+  position: relative;
+  font-family: "Cinzel", serif;
+  font-size: 1.5rem;
+  line-height: 1.1;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  background: linear-gradient(90deg, #fff 20%, #ffd060, #ff8c00);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: none;
+}
+
+.jutsu-effect p {
+  position: relative;
+  font-size: 0.88rem;
+  color: #d0deee;
+  margin-top: 0.3rem;
+}
+
+/* ─── Animations ─────────────────────────────────────────────────────────── */
+@keyframes panelIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes jutsuBurst {
+  from {
+    transform: scale(0.95) translateY(6px);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes livePulse {
+
+  0%,
+  100% {
+    box-shadow: 0 0 14px rgba(60, 255, 170, 0.22);
+  }
+
+  50% {
+    box-shadow: 0 0 24px rgba(60, 255, 170, 0.45);
+  }
+}
+
+@keyframes pulseBadge {
+
+  0%,
+  100% {
+    box-shadow: 0 0 22px rgba(255, 150, 40, 0.28);
+  }
+
+  50% {
+    box-shadow: 0 0 38px rgba(255, 150, 40, 0.55);
+  }
+}
+
+@keyframes rotateLogo {
+  from {
+    filter: hue-rotate(0deg);
+  }
+
+  to {
+    filter: hue-rotate(360deg);
+  }
+}
+
+@keyframes headerSheen {
+  0% {
+    left: -100%;
+  }
+
+  50% {
+    left: 120%;
+  }
+
+  100% {
+    left: 120%;
+  }
+}
+
+@keyframes chakraFlow {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  100% {
+    background-position: 200% 50%;
+  }
+}
+
+@keyframes chakraPulse {
+
+  0%,
+  100% {
+    opacity: 0.5;
+    transform: translateY(-50%) scale(1);
+  }
+
+  50% {
+    opacity: 1;
+    transform: translateY(-50%) scale(1.4);
+  }
+}
+
+/* ─── Scrollbar ──────────────────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(5, 10, 20, 0.5);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 130, 0, 0.35);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 130, 0, 0.6);
+}
+
+/* ─── Responsive ─────────────────────────────────────────────────────────── */
+@media (max-width: 1040px) {
+  .main-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 680px) {
+  .app-container {
+    width: 98vw;
+    padding: 0.5rem;
+  }
+
+  .detect-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sign-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .title {
+    font-size: 1.05rem;
+  }
+}

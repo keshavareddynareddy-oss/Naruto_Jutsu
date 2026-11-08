@@ -1,0 +1,10 @@
+**/.venv
+**/venv
+**/node_modules
+**/__pycache__
+**/.git
+backend/dataset
+frontend/dist
+**/.env
+**/*.pyc
+**/.cursor

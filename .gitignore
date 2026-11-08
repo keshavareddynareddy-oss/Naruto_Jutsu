@@ -1,0 +1,38 @@
+# Python
+.venv/
+venv/
+backend/venv/
+backend/.venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# Environment
+.env
+!.env.example
+
+# Node
+node_modules/
+
+# Build
+frontend/dist/
+
+# Dataset (large — download separately)
+backend/dataset/
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+.cursor/
+
+# Coverage / testing
+.coverage
+htmlcov/
+.pytest_cache/

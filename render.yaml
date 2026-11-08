@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: hidden-seal-nexus
+    runtime: docker
+    plan: starter
+    healthCheckPath: /api/health
+    envVars:
+      - key: ENV
+        value: production
+      - key: CORS_ORIGINS
+        value: "*"
+      - key: PORT
+        value: 8000
